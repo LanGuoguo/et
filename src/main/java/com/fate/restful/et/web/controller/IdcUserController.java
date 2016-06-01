@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fate.restful.et.common.bean.ReqResult;
 import com.fate.restful.et.domain.IdcUser;
 import com.fate.restful.et.service.IdcUserService;
 
@@ -33,10 +35,17 @@ public class IdcUserController {
 	 * @return
 	 */
 	@RequestMapping(value="/idcUsers", method=RequestMethod.GET)
-	public ResponseEntity<List<IdcUser>> ListAllUsers(){
+	public ResponseEntity<ReqResult> ListAllUsers(){
+		ReqResult rst = new ReqResult();
 		List<IdcUser> list = idcUserService.findAllUsers();
-		if(CollectionUtils.isEmpty(list)) return new ResponseEntity<List<IdcUser>>(HttpStatus.NO_CONTENT);
-		return new ResponseEntity<List<IdcUser>>(list, HttpStatus.OK);
+		rst.setResultCode(ReqResult.CODE_SUCCESS);
+		rst.setReturnObject(list);
+		if (CollectionUtils.isEmpty(list)) {
+			rst.setResultCode(204);
+			rst.setReturnMessage("没有数据");
+			return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
+		}
+		return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
 	}
 	
 	/**
@@ -73,9 +82,28 @@ public class IdcUserController {
 	 * @return
 	 */
 	@RequestMapping(value="/idcUser/add", method=RequestMethod.POST)
-	public ResponseEntity<String> add(HttpServletRequest request, @RequestBody IdcUser u){
-		if(u == null) return new ResponseEntity<String>("IdcUser param can not be null", HttpStatus.PRECONDITION_FAILED);
-		if(u.getUserCode() == null) {
+	public ResponseEntity<ReqResult> add(HttpServletRequest request, @RequestBody IdcUser u){
+		ReqResult rst = new ReqResult();
+		rst.setResultCode(ReqResult.CODE_SUCCESS);
+		if (StringUtils.isEmpty(u.getUserName()) || StringUtils.isEmpty(u.getUserMail())) {
+			rst.setResultCode(600);
+			rst.setReturnObject("");
+			rst.setReturnMessage("IdcUser param can not be null");
+			return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
+		}
+		IdcUser check = null;
+		for (int i = 0; i < 2; i++) {
+			check = new IdcUser();
+			if(i == 0) check.setUserName(u.getUserName());
+			if(i == 0) check.setUserMail(u.getUserMail());
+			if (idcUserService.findByModel(u) != null) {
+				rst.setResultCode(601);
+				rst.setReturnObject("");
+				rst.setReturnMessage("Duplicate");
+				return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
+			}
+		}
+		if(StringUtils.isEmpty(u.getUserCode())) {
 			IdcUser u4Code = new IdcUser();
 			String uCode = "UC_" + RandomStringUtils.randomAlphanumeric(8).toUpperCase();
 			u4Code.setUserCode(uCode);
@@ -85,11 +113,15 @@ public class IdcUserController {
 			}
 			u.setUserCode(uCode);
 		}
-		if(u.getUserLevel() == null) u.setUserLevel("normal");
-		if(u.getUserGroup() == null) u.setUserGroup("basic");
+		if(StringUtils.isEmpty(u.getUserLevel())) u.setUserLevel("normal");
+		if(StringUtils.isEmpty(u.getUserGroup())) u.setUserGroup("basic");
 		int line = idcUserService.add(u);
-		if(line <= 0) return new ResponseEntity<String>("add failed", HttpStatus.EXPECTATION_FAILED);
-		return new ResponseEntity<String>(HttpStatus.CREATED);
+		if (line <= 0) {
+			rst.setResultCode(700);
+			rst.setReturnObject("");
+			rst.setReturnMessage("add failed");
+		}
+		return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
 	}
 	
 	/**
