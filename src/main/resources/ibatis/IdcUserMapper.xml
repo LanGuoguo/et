@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fate.restful.et.persistence.IdcUserMapper">
+  <cache />
+  
+  <resultMap type="com.fate.restful.et.domain.IdcUser" id="idcUser">
+    <result property="gmtCreate" column="gmt_create" />
+    <result property="gmtModified" column="gmt_modified" />
+    <result property="userCode" column="user_code" />
+    <result property="userName" column="user_name" />
+    <result property="userMail" column="user_mail" />
+    <result property="userPwd" column="user_pwd" />
+    <result property="userPhone" column="user_phone" />
+    <result property="userLevel" column="user_level" />
+    <result property="userGroup" column="user_group" />
+    <result property="isDeleted" column="is_deleted" />
+  </resultMap>
+  
+  <select id="findAllUsers" resultMap="idcUser">
+    select 
+      id,
+      gmt_create,
+      gmt_modified,
+      user_code,
+      user_name,
+      user_mail,
+      user_pwd,
+      user_phone,
+      user_level,
+      user_group,
+      is_deleted
+    from
+      idc_user
+    where 
+      is_deleted = 'n'
+    order by
+      id
+  </select>
+  
+  <select id="findById" parameterType="java.lang.Long" resultMap="idcUser">
+    select 
+      id,
+      gmt_create,
+      gmt_modified,
+      user_code,
+      user_name,
+      user_mail,
+      user_pwd,
+      user_phone,
+      user_level,
+      user_group,
+      is_deleted
+    from
+      idc_user
+    where 
+      is_deleted = 'n'
+    where
+      id = #{id}
+  </select>
+  
+  <select id="findByModel" parameterType="com.fate.restful.et.domain.IdcUser" resultMap="idcUser">
+    select 
+      id,
+      gmt_create,
+      gmt_modified,
+      user_code,
+      user_name,
+      user_mail,
+      user_pwd,
+      user_phone,
+      user_level,
+      user_group,
+      is_deleted
+    from
+      idc_user
+    <where>
+      is_deleted = 'n'
+      <if test="userCode != null">and user_code = #{userCode}</if>
+      <if test="userName != null">and user_name = #{userName}</if>
+      <if test="userMail != null">and user_mail = #{userMail}</if>
+      <if test="userPwd != null">and user_pwd = #{userPwd}</if>
+      <if test="userPhone != null">and user_phone = #{userPhone}</if>
+    </where>
+  </select>
+
+  <insert id="add" parameterType="com.fate.restful.et.domain.IdcUser" useGeneratedKeys="true" keyProperty="id">
+    insert into idc_user(
+      gmt_create,
+      gmt_modified,
+      user_code,
+      user_name,
+      user_mail,
+      user_pwd,
+      user_phone,
+      user_level,
+      user_group,
+      is_deleted
+    )
+    values(
+      now(),
+      now(),
+      #{userCode},
+      #{userName},
+      #{userMail},
+      #{userPwd},
+      #{userPhone},
+      #{userLevel},
+      #{userGroup},
+      'n'
+    )
+  </insert>
+  
+  <update id="modify" parameterType="com.fate.restful.et.domain.IdcUser">
+    update idc_user
+    <set>
+      gmt_modified = now(),
+      <if test="userCode != null">user_code = #{userCode},</if>
+      <if test="userName != null">user_name = #{userName},</if>
+      <if test="userMail != null">user_mail = #{userMail},</if>
+      <if test="userPwd != null">user_pwd = #{userPwd},</if>
+      <if test="userPhone != null">user_phone = #{userPhone}</if>
+      <if test="userLevel != null">user_level = #{userLevel}</if>
+      <if test="userGroup != null">user_group = #{userGroup}</if>
+      <if test="isDeleted != null">is_deleted = #{isDeleted}</if>
+    </set>
+    where
+      id = #{id}
+  </update>
+</mapper>

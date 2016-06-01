@@ -3,6 +3,11 @@ package com.fate.restful.et.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 
+ * @author WangGang
+ * 2016年05月31日14:57:06
+ */
 public class EtUsers implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
