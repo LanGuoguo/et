@@ -34,7 +34,7 @@ public class IdcUserController {
 	 * Retrieve All Users
 	 * @return
 	 */
-	@RequestMapping(value="/idcUsers", method=RequestMethod.GET)
+	@RequestMapping(value="/restApi/idcUsers", method=RequestMethod.GET)
 	public ResponseEntity<ReqResult> ListAllUsers(){
 		ReqResult rst = new ReqResult();
 		List<IdcUser> list = idcUserService.findAllUsers();
@@ -53,7 +53,7 @@ public class IdcUserController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="/idcUser/{id}", method=RequestMethod.GET)
+	@RequestMapping(value="/restApi/idcUser/{id}", method=RequestMethod.GET)
 	public ResponseEntity<IdcUser> getById(@PathVariable("id") long id){
 		if(id <= 0) return new ResponseEntity<IdcUser>(HttpStatus.PRECONDITION_FAILED);
 		IdcUser u = idcUserService.findById(id);
@@ -67,7 +67,7 @@ public class IdcUserController {
 	 * @param u
 	 * @return
 	 */
-	@RequestMapping(value="/idcUser/model", method=RequestMethod.POST)
+	@RequestMapping(value="/restApi/idcUser/model", method=RequestMethod.POST)
 	public ResponseEntity<IdcUser> getByModel(HttpServletRequest request, @RequestBody IdcUser u){
 		if(u == null) return new ResponseEntity<IdcUser>(HttpStatus.PRECONDITION_FAILED);
 		IdcUser rst = idcUserService.findByModel(u);
@@ -81,7 +81,7 @@ public class IdcUserController {
 	 * @param u
 	 * @return
 	 */
-	@RequestMapping(value="/idcUser/add", method=RequestMethod.POST)
+	@RequestMapping(value="/restApi/idcUser/add", method=RequestMethod.POST)
 	public ResponseEntity<ReqResult> add(HttpServletRequest request, @RequestBody IdcUser u){
 		ReqResult rst = new ReqResult();
 		rst.setResultCode(ReqResult.CODE_SUCCESS);
@@ -130,7 +130,7 @@ public class IdcUserController {
 	 * @param u
 	 * @return
 	 */
-	@RequestMapping(value="/idcUser/modify", method=RequestMethod.PUT)
+	@RequestMapping(value="/restApi/idcUser/modify", method=RequestMethod.PUT)
 	public ResponseEntity<String> modify(HttpServletRequest request, @RequestBody IdcUser u){
 		if(u == null) return new ResponseEntity<String>("IdcUser param can not be null", HttpStatus.NOT_MODIFIED);
 		if(u.getId() <= 0) return new ResponseEntity<String>("IdcUser.id can not less than or equal 0", HttpStatus.NOT_MODIFIED);
