@@ -1,6 +1,8 @@
 package com.fate.restful.et.domain;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 /**
  * 
@@ -16,11 +18,11 @@ public class IdcUser implements Serializable {
 	/**
 	 * 创建时间
 	 */
-	private Date gmtCreate;
+	private String gmtCreate;
 	/**
 	 * 修改时间
 	 */
-	private Date gmtModified;
+	private String gmtModified;
 	/**
 	 * CODE，自动生成，不可修改
 	 */
@@ -64,16 +66,25 @@ public class IdcUser implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public Date getGmtCreate() {
+	public String getGmtCreate() {
 		return gmtCreate;
 	}
-	public void setGmtCreate(Date gmtCreate) {
+	public void setGmtCreate(String gmtCreate) {
 		this.gmtCreate = gmtCreate;
 	}
-	public Date getGmtModified() {
+	public String getGmtModified() {
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		try {
+//			System.out.println(sdf.format(gmtModified));
+//			System.out.println(sdf.parse(sdf.format(gmtModified)));
+//			return sdf.parse(sdf.format(gmtModified));
+//		} catch (ParseException e) {
+////			e.printStackTrace();
+//			return gmtModified;
+//		}
 		return gmtModified;
 	}
-	public void setGmtModified(Date gmtModified) {
+	public void setGmtModified(String gmtModified) {
 		this.gmtModified = gmtModified;
 	}
 	public String getUserCode() {

@@ -95,8 +95,8 @@ public class IdcUserController {
 		for (int i = 0; i < 2; i++) {
 			check = new IdcUser();
 			if(i == 0) check.setUserName(u.getUserName());
-			if(i == 0) check.setUserMail(u.getUserMail());
-			if (idcUserService.findByModel(u) != null) {
+			if(i == 1) check.setUserMail(u.getUserMail());
+			if (idcUserService.findByModel(check) != null) {
 				rst.setResultCode(601);
 				rst.setReturnObject("");
 				rst.setReturnMessage("Duplicate");
@@ -137,5 +137,37 @@ public class IdcUserController {
 		int line = idcUserService.modify(u);
 		if(line <= 0) return new ResponseEntity<String>(HttpStatus.NOT_MODIFIED);
 		return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+	}
+	
+	/**
+	 * Delete Users
+	 * @param request
+	 * @param u
+	 * @return
+	 */
+	@RequestMapping(value="/restApi/idcUser/delete", method=RequestMethod.PUT)
+	public ResponseEntity<ReqResult> delete(HttpServletRequest request, @RequestBody List<Long> ids){
+		ReqResult rst = new ReqResult();
+		rst.setResultCode(1100);
+		rst.setReturnMessage("删除成功！");
+		if(CollectionUtils.isEmpty(ids)) {
+			rst.setResultCode(600);
+			rst.setReturnMessage("IdcUser param can not be null");
+			return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
+		}
+		IdcUser u = null;
+		int line = 0;
+		for (Long id : ids) {
+			u = new IdcUser();
+			u.setId(id);
+			u.setIsDeleted("y");
+			line += idcUserService.modify(u);
+		}
+		
+		if(line <= 0) {
+			rst.setResultCode(700);
+			rst.setReturnMessage("删除失败！操作数据库受影响行数为：0");
+		}
+		return new ResponseEntity<ReqResult>(rst, HttpStatus.OK);
 	}
 }

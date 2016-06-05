@@ -31,8 +31,8 @@
       is_deleted
     from
       idc_user
-    where 
-      is_deleted = 'n'
+    <!-- where 
+      is_deleted = 'n' -->
     order by
       id
   </select>
@@ -52,8 +52,8 @@
       is_deleted
     from
       idc_user
-    where 
-      is_deleted = 'n'
+    <!-- where 
+      is_deleted = 'n' -->
     where
       id = #{id}
   </select>
@@ -74,7 +74,7 @@
     from
       idc_user
     <where>
-      is_deleted = 'n'
+      <!-- is_deleted = 'n' -->
       <if test="userCode != null">and user_code = #{userCode}</if>
       <if test="userName != null">and user_name = #{userName}</if>
       <if test="userMail != null">and user_mail = #{userMail}</if>
